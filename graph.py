@@ -12,7 +12,7 @@ class Node:
         self.neighbors = {}
 
     # Accessor for the name
-    def name(self):
+    def getName(self):
         return self.name
 
     # Accessor for the names of the neighbors to the current node
@@ -35,18 +35,17 @@ class Graph:
         self.nodeList = {}
         self.nodeCount = 0
 
+    # Allow iterations over nodes
+    def __iter__(self):
+        return iter(self.nodeList.values())
+
     # Add a node of a given name, and increment the amount of nodes
     def addNode(self, name):
         self.nodeCount += 1
         self.nodeList[name] = Node(name)
 
-
-    def getNode(self, node):
-        if node in self.nodeList:
-            return self.nodeList[node]
-        else:
-            return None
-
+    # Add an edge from source to dest, creating source and dest if they do not 
+    # exist
     def addEdge(self, source, dest, weight = 0):
         if source not in self.nodeList:
             self.addNode(source)
@@ -54,31 +53,15 @@ class Graph:
             self.addNode(dest)
         self.nodeList[source].addNeighbor(self.nodeList[dest], weight)
 
+    # Get all nodes in the current graph
     def getNodes(self):
         return self.nodeList.keys()
 
 
 
 def main():
-    #file = sys.argv[1]
-    #graph = Graph()
-    #graph.importFromFile(file)
+    pass
 
-    g = Graph()
-    for i in range(6):
-        g.addNode(i)
-
-    g.addEdge(0,1,5)
-    g.addEdge(0,5,2)
-    g.addEdge(1,2,4)
-    g.addEdge(2,3,9)
-    g.addEdge(3,4,7)
-    g.addEdge(3,5,3)
-    g.addEdge(4,0,1)
-    g.addEdge(5,4,8)
-    g.addEdge(5,2,1)
-
-    print g.nodeList[0].neighbors.keys()
 
 if __name__ == "__main__":
     main()
