@@ -82,6 +82,8 @@ class Graph:
             if node.visited == False:
                 self.explore(node)
 
+        self.clock = 0
+
     # Explore from a given node, and mark current node as visited
     def explore(self, node):
         node.visited = True
@@ -91,10 +93,12 @@ class Graph:
                 self.explore(neighbor)
         self.postVisit(node)
 
+    # Perform a previsit operation on a given node
     def preVisit(self, node):
         self.pre[node] = self.clock
         self.clock += 1
 
+    # Perform a postvisit operation on a given node
     def postVisit(self, node):
         self.post[node] = self.clock
         self.clock += 1
