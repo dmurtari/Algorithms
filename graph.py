@@ -1,4 +1,5 @@
 import sys
+sys.setrecursionlimit(100000)
 
 # Defines a node, that node's contents, and the neighbors to that node and the
 # edge weights to access that neighbor
@@ -10,6 +11,7 @@ class Node:
     def __init__(self, name):
         self.name = name
         self.neighbors = {}
+        self.visited = False
 
     # Accessor for the name
     def getName(self):
@@ -34,10 +36,24 @@ class Graph:
     def __init__(self):
         self.nodeList = {}
         self.nodeCount = 0
+        self.pre = {}
+        self.post = {}
+        self.clock = 0
 
     # Allow iterations over nodes
     def __iter__(self):
         return iter(self.nodeList.values())
+    
+    # Import a graph from a file. Each line should contain the two nodes that
+    # an edge goes between, separated by a tab.
+    # ONLY WORKS FOR UNWEIGHTED GRAPHS
+    def importFromFile(self, graph):
+        fopen = open(graph, "r")
+        graphList = fopen.read().splitlines()
+        
+        for pair in graphList:
+            pair = pair.split("\t")
+            self.addEdge(pair[0],pair[1])
 
     # Add a node of a given name, and increment the amount of nodes
     def addNode(self, name):
@@ -57,23 +73,38 @@ class Graph:
     def getNodes(self):
         return self.nodeList.keys()
 
-    def importFromFile(self, graph):
-        fopen = open(graph, "r")
-        graphList = fopen.read().splitlines()
-        
-        for pair in graphList:
-            pair = pair.split("\t")
-            self.addEdge(pair[0],pair[1])
+    # Depth-First-Search on self
+    def DFS(self):
+        for node in self:
+            node.visited = False
 
+        for node in self:
+            if node.visited == False:
+                self.explore(node)
+
+    # Explore from a given node, and mark current node as visited
+    def explore(self, node):
+        node.visited = True
+        self.preVisit(node)
+        for neighbor in node.getNeighbors():
+            if neighbor.visited == False:
+                self.explore(neighbor)
+        self.postVisit(node)
+
+    def preVisit(self, node):
+        self.pre[node] = self.clock
+        self.clock += 1
+
+    def postVisit(self, node):
+        self.post[node] = self.clock
+        self.clock += 1
 
 
 def main():
     graphFile = sys.argv[1]
-    print sys.argv[1]
     graph = Graph()
     graph.importFromFile(graphFile)
-    print len(graph.getNodes())
-
+    graph.DFS()
 
 if __name__ == "__main__":
     main()
