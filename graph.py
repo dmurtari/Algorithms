@@ -57,10 +57,22 @@ class Graph:
     def getNodes(self):
         return self.nodeList.keys()
 
+    def importFromFile(self, graph):
+        fopen = open(graph, "r")
+        graphList = fopen.read().splitlines()
+        
+        for pair in graphList:
+            pair = pair.split("\t")
+            self.addEdge(pair[0],pair[1])
+
 
 
 def main():
-    pass
+    graphFile = sys.argv[1]
+    print sys.argv[1]
+    graph = Graph()
+    graph.importFromFile(graphFile)
+    print len(graph.getNodes())
 
 
 if __name__ == "__main__":
