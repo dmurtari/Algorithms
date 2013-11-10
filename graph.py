@@ -74,6 +74,8 @@ class Graph:
         return self.nodeList.keys()
 
     # Depth-First-Search on self
+    # For each node, mark as visited. Then, if a node isn't visited, then
+    # explore starting at that node
     def DFS(self):
         for node in self:
             node.visited = False
@@ -82,9 +84,11 @@ class Graph:
             if node.visited == False:
                 self.explore(node)
 
+        # Set clock to zero after DFS to be able to be used later
         self.clock = 0
 
-    # Explore from a given node, and mark current node as visited
+    # Explore from a given node, and mark current node as visited. Used 
+    # properly, will also be able to find Strongly Connected Components. 
     def explore(self, node):
         node.visited = True
         self.preVisit(node)
