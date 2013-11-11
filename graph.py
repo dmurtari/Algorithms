@@ -14,7 +14,7 @@ class Node:
         self.name = name
         self.neighbors = {}
         self.visited = False
-        self.sccNum = None
+        self.sccID = None
         self.pre = None
         self.post = None
 
@@ -101,19 +101,15 @@ class Graph:
         self.preVisit(node, components)
         for neighbor in node.getNeighbors():
             if neighbor.visited == False:
-                print "exploring neighbors"
-                self.explore(neighbor)
-                # if components:
-                #     print "Component is: " + str(self.sccCount)
-                #     self.sccCount += 1
+                self.explore(neighbor, components)
         self.postVisit(node)
 
     # Perform a previsit operation on a given node
     def preVisit(self, node, components = False):
         node.pre = self.clock
         if components:
-            node.sccNum = self.sccCount
-            print "Component is " + str(node.sccNum)
+            node.sccID = self.sccCount
+            print "Component is " + str(node.sccID)
         self.clock += 1
 
     # Perform a postvisit operation on a given node
@@ -129,12 +125,12 @@ class Graph:
         self.DFS()
 
         # Iterate according to post values
+        for node in self:
+            node.visited = False
         for node in sorted(self.nodeList.values(), key = operator.attrgetter('post')):
-            pass
-        
-        # And reimport in correct edge order
-        self.nodeList = {}
-        self.importFromFile(graph)
+            if node.visited == False:
+                self.explore(node, True)
+                self.sccCount += 1
 
 
         # Todo:
@@ -148,7 +144,7 @@ def main():
     # graph.importFromFile(graphFile, True)
     graph.sccFind(graphFile)
     for node in graph:
-        print node.name + " scc is: " + str(node.sccNum)
+        print node.name + " scc is: " + str(node.sccID)
 
 
 if __name__ == "__main__":
