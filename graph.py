@@ -1,4 +1,5 @@
 import sys, operator, itertools
+from queue import Queue
 
 sys.setrecursionlimit(100000)
 
@@ -16,6 +17,7 @@ class Node:
         self.sccID = None
         self.pre = None
         self.post = None
+        self.dist = 0
 
     # Accessor for the name
     def getName(self):
@@ -96,6 +98,23 @@ class Graph:
         # Set clock to zero after DFS to be able to be used later
         self.clock = 0
 
+
+    def BFS(self, start):
+        for node in self:
+            node.dist = float("inf")
+        
+        start.dist = 0
+        q = Queue()
+        q.inject(start)
+        while not q.isEmpty():
+            node = q.eject()
+            for neighbor in node.getNeighbors():
+                if dist(neighbor) == float("inf"):
+                    q.inject(node)
+                    node.dist = start.dist + 1
+
+
+
     # Explore from a given node, and mark current node as visited. If component
     # value is set to true, will also mark component numbers while exploring.
     # !Component numbers must be incremented in the calling function! 
@@ -104,6 +123,7 @@ class Graph:
         self.preVisit(node, components)
         for neighbor in node.getNeighbors():
             if neighbor.visited == False:
+                print "Exploring from: " + node.name + " to " + neighbor.name
                 self.explore(neighbor, components)
         self.postVisit(node)
 
@@ -139,8 +159,10 @@ class Graph:
             node.visited = False
         # Iterate through nodes in reverse-post-value order, and expore if the 
         # node has not been visited
+        print "Finding components"
         for node in sorted(self.nodeList.values(),
-                           key = operator.attrgetter('post')):
+                           key = operator.attrgetter('post'),
+                           reverse = True):
             if node.visited == False:
                 self.explore(node, True)
                 self.sccCount += 1
@@ -155,16 +177,22 @@ class Graph:
             if node.sccID == self.sccSum.index(max(self.sccSum)):
                 for neighbor in node.getNeighbors():
                     self.sccEdges += 1
+
+        return (max(self.sccSum), self.sccEdges)
         
-        print "Size of largest Strongly-Connected Component is: " + str(max(self.sccSum))
-        print "Number of edges is: " + str(self.sccEdges)
-
-
+        # print "Size of largest Strongly-Connected Component is: " + str(max(self.sccSum))
+        # print "Number of edges is: " + str(self.sccEdges)
 
 def main():
+    
     graphFile = sys.argv[1]
     graph = Graph()
-    graph.sccFind(graphFile)
+    """
+    nodes, edges = graph.sccFind(graphFile)
+    print "Largest component size is: " + str(nodes)
+    print "Number of edges in component is: " + str(edges)
+    """
+    graph.BFS()
 
 if __name__ == "__main__":
     main()
