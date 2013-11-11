@@ -94,8 +94,9 @@ class Graph:
         # Set clock to zero after DFS to be able to be used later
         self.clock = 0
 
-    # Explore from a given node, and mark current node as visited. Used 
-    # properly, will also be able to find Strongly Connected Components. 
+    # Explore from a given node, and mark current node as visited. If component
+    # value is set to true, will also mark component numbers while exploring.
+    # !Component numbers must be incremented in the calling function! 
     def explore(self, node, components = False):
         node.visited = True
         self.preVisit(node, components)
@@ -105,11 +106,11 @@ class Graph:
         self.postVisit(node)
 
     # Perform a previsit operation on a given node
+    # Gives the node a component number if component is True
     def preVisit(self, node, components = False):
         node.pre = self.clock
         if components:
             node.sccID = self.sccCount
-            print "Component is " + str(node.sccID)
         self.clock += 1
 
     # Perform a postvisit operation on a given node
@@ -117,7 +118,10 @@ class Graph:
         node.post = self.clock
         self.clock += 1
 
-    # Find Strongly-Connected Components. 
+    # Find Strongly-Connected Components. DFS to find all nodes, giving each
+    # node a post value on the graph where all edges have been reversed. Then, 
+    # iterate through the original, non-reversed graph, exploring from each 
+    # node in reverse-post order.
     def sccFind(self, graph):
         # Reinitialize nodeList as empty (because need to reverse edges)
         self.nodeList = {}
@@ -127,16 +131,13 @@ class Graph:
         # Iterate according to post values
         for node in self:
             node.visited = False
-        for node in sorted(self.nodeList.values(), key = operator.attrgetter('post')):
+        # Iterate through nodes in reverse-post-value order, and expore if the 
+        # node has not been visited
+        for node in sorted(self.nodeList.values(),
+                           key = operator.attrgetter('post')):
             if node.visited == False:
                 self.explore(node, True)
                 self.sccCount += 1
-
-
-        # Todo:
-        # Pre and Post now stored in object, so need to iterate through
-        # nodes using post numbers associated with that node, and mark scc when
-
 
 def main():
     graphFile = sys.argv[1]
