@@ -12,6 +12,7 @@ class Node:
         self.name = name
         self.neighbors = {}
         self.visited = False
+        self.sccNum = None
 
     # Accessor for the name
     def getName(self):
@@ -39,6 +40,7 @@ class Graph:
         self.pre = {}
         self.post = {}
         self.clock = 0
+        self.sccCount = 0
 
     # Allow iterations over nodes
     def __iter__(self):
@@ -47,13 +49,16 @@ class Graph:
     # Import a graph from a file. Each line should contain the two nodes that
     # an edge goes between, separated by a tab.
     # ONLY WORKS FOR UNWEIGHTED GRAPHS
-    def importFromFile(self, graph):
+    def importFromFile(self, graph, reverse = False):
         fopen = open(graph, "r")
         graphList = fopen.read().splitlines()
         
         for pair in graphList:
             pair = pair.split("\t")
-            self.addEdge(pair[0],pair[1])
+            if reverse:
+                self.addEdge(pair[1], pair[0])
+            else:
+                self.addEdge(pair[0],pair[1])
 
     # Add a node of a given name, and increment the amount of nodes
     def addNode(self, name):
