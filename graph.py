@@ -1,5 +1,4 @@
-import sys
-import operator
+import sys, operator, itertools
 
 sys.setrecursionlimit(100000)
 
@@ -43,6 +42,7 @@ class Graph:
         self.nodeCount = 0
         self.clock = 0
         self.sccCount = 0
+        self.sccSum = []
 
     # Allow iterations over nodes
     def __iter__(self):
@@ -139,10 +139,19 @@ class Graph:
                 self.explore(node, True)
                 self.sccCount += 1
 
+        for n in range(self.sccCount):
+            self.sccSum.append(0)
+
+        for node in self:
+            self.sccSum[node.sccID] += 1
+        
+        print "Largest Strongly-Connected Component is: " + str(max(self.sccSum))
+
+
+
 def main():
     graphFile = sys.argv[1]
     graph = Graph()
-    # graph.importFromFile(graphFile, True)
     graph.sccFind(graphFile)
     for node in graph:
         print node.name + " scc is: " + str(node.sccID)
