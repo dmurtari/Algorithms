@@ -112,12 +112,29 @@ class Graph:
         self.post[node] = self.clock
         self.clock += 1
 
+    # Find Strongly-Connected Components. 
+    def sccFind(self, graph):
+        # Reinitialize nodeList as empty (because need to reverse import)
+        self.nodeList = {}
+        self.importFromFile(graph, True)
+        self.DFS()
+        postSorted = sorted(self.post, key=self.post.get)
+        for node in postSorted:
+            node.visited = False
+        for node in postSorted:
+            if node.visited == False:
+                pass
+
+
+
 
 def main():
     graphFile = sys.argv[1]
     graph = Graph()
-    graph.importFromFile(graphFile)
+    # graph.importFromFile(graphFile, True)
+    graph.sccFind(graphFile)
     graph.DFS()
+
 
 if __name__ == "__main__":
     main()
