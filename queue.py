@@ -1,4 +1,5 @@
 class Queue:
+
     def __init__(self):
         self.items = []
         self.size = 0
@@ -9,10 +10,10 @@ class Queue:
         else:
             return False
 
-    def enqueue(self, item):
+    def inject(self, item):
         self.items.insert(0, item)
         self.size += 1
 
-    def dequeue(self):
+    def eject(self):
         return self.items.pop()
         self.size -= 1
