@@ -94,17 +94,23 @@ class Graph:
 
     # Explore from a given node, and mark current node as visited. Used 
     # properly, will also be able to find Strongly Connected Components. 
-    def explore(self, node):
+    def explore(self, node, components = False):
         node.visited = True
-        self.preVisit(node)
+        self.preVisit(node, components)
         for neighbor in node.getNeighbors():
             if neighbor.visited == False:
                 self.explore(neighbor)
+                # if components:
+                #     print "Component is: " + str(self.sccCount)
+                #     self.sccCount += 1
         self.postVisit(node)
 
     # Perform a previsit operation on a given node
-    def preVisit(self, node):
+    def preVisit(self, node, components = False):
         self.pre[node] = self.clock
+        if components:
+            node.sccNum = self.sccCount
+            print "Component is: " + str(self.sccCount)
         self.clock += 1
 
     # Perform a postvisit operation on a given node
@@ -114,18 +120,23 @@ class Graph:
 
     # Find Strongly-Connected Components. 
     def sccFind(self, graph):
-        # Reinitialize nodeList as empty (because need to reverse import)
+        # Reinitialize nodeList as empty (because need to reverse edges)
         self.nodeList = {}
         self.importFromFile(graph, True)
         self.DFS()
-        postSorted = sorted(self.post, key=self.post.get)
+        postSorted = sorted(self.post, key = self.post.get)
+        
+        # And reimport in correct edge order
+        self.nodeList = {}
+        self.importFromFile(graph)
+
         for node in postSorted:
             node.visited = False
         for node in postSorted:
             if node.visited == False:
-                pass
-
-
+                print "Exploring"
+                self.explore(node, True)
+                self.sccCount += 1
 
 
 def main():
@@ -133,7 +144,8 @@ def main():
     graph = Graph()
     # graph.importFromFile(graphFile, True)
     graph.sccFind(graphFile)
-    graph.DFS()
+    for node in graph:
+        print node.name + " scc is: " + str(node.sccNum)
 
 
 if __name__ == "__main__":
