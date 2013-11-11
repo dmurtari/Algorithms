@@ -1,4 +1,6 @@
 import sys
+import operator
+
 sys.setrecursionlimit(100000)
 
 # Defines a node, that node's contents, and the neighbors to that node and the
@@ -125,11 +127,19 @@ class Graph:
         self.nodeList = {}
         self.importFromFile(graph, True)
         self.DFS()
+
+        # Iterate according to post values
+        for node in sorted(self.nodeList.values(), key = operator.attrgetter('post')):
+            pass
         
         # And reimport in correct edge order
         self.nodeList = {}
         self.importFromFile(graph)
 
+
+        # Todo:
+        # Pre and Post now stored in object, so need to iterate through
+        # nodes using post numbers associated with that node, and mark scc when
 
 
 def main():
