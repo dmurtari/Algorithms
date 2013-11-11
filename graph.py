@@ -13,6 +13,8 @@ class Node:
         self.neighbors = {}
         self.visited = False
         self.sccNum = None
+        self.pre = None
+        self.post = None
 
     # Accessor for the name
     def getName(self):
@@ -37,8 +39,6 @@ class Graph:
     def __init__(self):
         self.nodeList = {}
         self.nodeCount = 0
-        self.pre = {}
-        self.post = {}
         self.clock = 0
         self.sccCount = 0
 
@@ -99,6 +99,7 @@ class Graph:
         self.preVisit(node, components)
         for neighbor in node.getNeighbors():
             if neighbor.visited == False:
+                print "exploring neighbors"
                 self.explore(neighbor)
                 # if components:
                 #     print "Component is: " + str(self.sccCount)
@@ -107,15 +108,15 @@ class Graph:
 
     # Perform a previsit operation on a given node
     def preVisit(self, node, components = False):
-        self.pre[node] = self.clock
+        node.pre = self.clock
         if components:
             node.sccNum = self.sccCount
-            print "Component is: " + str(self.sccCount)
+            print "Component is " + str(node.sccNum)
         self.clock += 1
 
     # Perform a postvisit operation on a given node
     def postVisit(self, node):
-        self.post[node] = self.clock
+        node.post = self.clock
         self.clock += 1
 
     # Find Strongly-Connected Components. 
@@ -124,19 +125,11 @@ class Graph:
         self.nodeList = {}
         self.importFromFile(graph, True)
         self.DFS()
-        postSorted = sorted(self.post, key = self.post.get)
         
         # And reimport in correct edge order
         self.nodeList = {}
         self.importFromFile(graph)
 
-        for node in postSorted:
-            node.visited = False
-        for node in postSorted:
-            if node.visited == False:
-                print "Exploring"
-                self.explore(node, True)
-                self.sccCount += 1
 
 
 def main():
