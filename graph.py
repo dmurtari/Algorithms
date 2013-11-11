@@ -43,6 +43,8 @@ class Graph:
         self.clock = 0
         self.sccCount = 0
         self.sccSum = []
+        self.sccSumMembers = []
+        self.sccEdges = 0
 
     # Allow iterations over nodes
     def __iter__(self):
@@ -125,6 +127,10 @@ class Graph:
     def sccFind(self, graph):
         # Reinitialize nodeList as empty (because need to reverse edges)
         self.nodeList = {}
+        self.sccSum = []
+        self.sccSumMembers = []
+        self.sccEdges = 0
+
         self.importFromFile(graph, True)
         self.DFS()
 
@@ -144,8 +150,14 @@ class Graph:
 
         for node in self:
             self.sccSum[node.sccID] += 1
+
+        for node in self:
+            if node.sccID == self.sccSum.index(max(self.sccSum)):
+                for neighbor in node.getNeighbors():
+                    self.sccEdges += 1
         
-        print "Largest Strongly-Connected Component is: " + str(max(self.sccSum))
+        print "Size of largest Strongly-Connected Component is: " + str(max(self.sccSum))
+        print "Number of edges is: " + str(self.sccEdges)
 
 
 
@@ -153,9 +165,6 @@ def main():
     graphFile = sys.argv[1]
     graph = Graph()
     graph.sccFind(graphFile)
-    for node in graph:
-        print node.name + " scc is: " + str(node.sccID)
-
 
 if __name__ == "__main__":
     main()
