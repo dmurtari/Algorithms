@@ -123,7 +123,6 @@ class Graph:
         self.preVisit(node, components)
         for neighbor in node.getNeighbors():
             if neighbor.visited == False:
-                print "Exploring from: " + node.name + " to " + neighbor.name
                 self.explore(neighbor, components)
         self.postVisit(node)
 
@@ -161,8 +160,7 @@ class Graph:
         # node has not been visited
         print "Finding components"
         for node in sorted(self.nodeList.values(),
-                           key = operator.attrgetter('post'),
-                           reverse = True):
+                           key = operator.attrgetter('post')):
             if node.visited == False:
                 self.explore(node, True)
                 self.sccCount += 1
@@ -183,16 +181,20 @@ class Graph:
         # print "Size of largest Strongly-Connected Component is: " + str(max(self.sccSum))
         # print "Number of edges is: " + str(self.sccEdges)
 
+    def diameter(self):
+        for node in self:
+            self.BFS(node)
+
 def main():
     
     graphFile = sys.argv[1]
     graph = Graph()
-    """
+    
     nodes, edges = graph.sccFind(graphFile)
-    print "Largest component size is: " + str(nodes)
-    print "Number of edges in component is: " + str(edges)
-    """
-    graph.BFS()
+    print "Largest component size is: " + str(nodes)       # 70355
+    print "Number of edges in component is: " + str(edges) # 888662
+    
+    #graph.BFS()
 
 if __name__ == "__main__":
     main()
