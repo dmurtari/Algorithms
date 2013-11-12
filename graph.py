@@ -41,7 +41,6 @@ class Graph:
     # Initialize a graph with an empty list of nodes
     def __init__(self):
         self.nodeList = {}
-        self.nodeCount = 0
         self.clock = 0
         self.sccCount = 0
         self.sccSum = []
@@ -69,7 +68,6 @@ class Graph:
 
     # Add a node of a given name, and increment the amount of nodes
     def addNode(self, name):
-        self.nodeCount += 1
         self.nodeList[name] = Node(name)
 
     # Add an edge from source to dest, creating source and dest if they do not 
@@ -104,19 +102,23 @@ class Graph:
         for node in self:
             node.dist = float("inf")
 
-        diameter = 0
+        pathLength = 0
         
         start.dist = 0
         q = Queue()
         q.inject(start)
+
         while q.isEmpty() == False:
             node = q.eject()
-            diameter += 1
             for neighbor in node.getNeighbors():
                 if neighbor.dist == float("inf"):
                     q.inject(neighbor)
-                    neighbor.dist = node.dist + 1   
-        return diameter
+                    neighbor.dist = node.dist + 1  
+                    if neighbor.dist > pathLength:
+                        pathLength = neighbor.dist
+
+        print "pathLength is " + str(pathLength)
+        return pathLength
 
     # Explore from a given node, and mark current node as visited. If component
     # value is set to true, will also mark component numbers while exploring.
@@ -184,6 +186,9 @@ class Graph:
         return (max(self.sccSum), self.sccEdges)
 
     def findDiameter(self):
+
+        self.diameter = 0
+
         for node in self:
             # print "BFSing"
             temp = self.BFS(node)
@@ -197,6 +202,9 @@ def main():
     graphFile = sys.argv[1]
     graph = Graph()
     graph.importFromFile(graphFile)
+
+    diameter = graph.findDiameter()
+    print "diameter is " + str(diameter)
 
 if __name__ == "__main__":
     main()
