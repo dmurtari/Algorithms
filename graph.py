@@ -47,6 +47,7 @@ class Graph:
         self.sccSum = []
         self.sccSumMembers = []
         self.sccEdges = 0
+        self.diameter = 0
 
     # Allow iterations over nodes
     def __iter__(self):
@@ -54,7 +55,7 @@ class Graph:
     
     # Import a graph from a file. Each line should contain the two nodes that
     # an edge goes between, separated by a tab.
-    # ONLY WORKS FOR UNWEIGHTED GRAPHS
+    # ONLY WORKS FOR UNWEIGHTED GRAPHS (Could easily work for weighted)
     def importFromFile(self, graph, reverse = False):
         fopen = open(graph, "r")
         graphList = fopen.read().splitlines()
@@ -98,22 +99,24 @@ class Graph:
         # Set clock to zero after DFS to be able to be used later
         self.clock = 0
 
-
+    # Breadth-First-Search on self
     def BFS(self, start):
         for node in self:
             node.dist = float("inf")
+
+        diameter = 0
         
         start.dist = 0
         q = Queue()
         q.inject(start)
-        while not q.isEmpty():
+        while q.isEmpty() == False:
             node = q.eject()
+            diameter += 1
             for neighbor in node.getNeighbors():
-                if dist(neighbor) == float("inf"):
-                    q.inject(node)
-                    node.dist = start.dist + 1
-
-
+                if neighbor.dist == float("inf"):
+                    q.inject(neighbor)
+                    neighbor.dist = node.dist + 1   
+        return diameter
 
     # Explore from a given node, and mark current node as visited. If component
     # value is set to true, will also mark component numbers while exploring.
@@ -143,6 +146,8 @@ class Graph:
     # node a post value on the graph where all edges have been reversed. Then, 
     # iterate through the original, non-reversed graph, exploring from each 
     # node in reverse-post order.
+    # Returns a tuple of the number of SCC's, and the number of edges in that
+    # SCC
     def sccFind(self, graph):
         # Reinitialize nodeList as empty (because need to reverse edges)
         self.nodeList = {}
@@ -177,24 +182,27 @@ class Graph:
                     self.sccEdges += 1
 
         return (max(self.sccSum), self.sccEdges)
-        
-        # print "Size of largest Strongly-Connected Component is: " + str(max(self.sccSum))
-        # print "Number of edges is: " + str(self.sccEdges)
 
-    def diameter(self):
+    def findDiameter(self):
         for node in self:
-            self.BFS(node)
+            # print "BFSing"
+            temp = self.BFS(node)
+            if temp > self.diameter:
+                self.diameter = temp
+
+        return self.diameter
 
 def main():
     
     graphFile = sys.argv[1]
     graph = Graph()
+    graph.importFromFile(graphFile)
+    diameter = graph.findDiameter()
     
-    nodes, edges = graph.sccFind(graphFile)
-    print "Largest component size is: " + str(nodes)       # 70355
-    print "Number of edges in component is: " + str(edges) # 888662
-    
-    #graph.BFS()
+    # nodes, edges = graph.sccFind(graphFile)
+    # print "Largest component size is: " + str(nodes)       # 70355
+    # print "Number of edges in component is: " + str(edges) # 888662
+    print "Diameter is: " + str(diameter)                  # 10
 
 if __name__ == "__main__":
     main()

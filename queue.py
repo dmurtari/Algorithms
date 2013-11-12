@@ -20,11 +20,11 @@ class Queue:
 
 def main():
     q = Queue()
-    print str(q.isEmpty()) + " should be true"
+    print str(q.isEmpty()) + " should be True"
     q.inject(1)
     q.inject(2)
     q.inject(3)
-    print str(q.isEmpty()) + " should be false"
+    print str(q.isEmpty()) + " should be False"
     print str(q.eject()) + " should be 1"
     print str(q.eject()) + " should be 2"
     print str(q.eject()) + " should be 3"   
