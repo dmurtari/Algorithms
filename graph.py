@@ -197,12 +197,6 @@ def main():
     graphFile = sys.argv[1]
     graph = Graph()
     graph.importFromFile(graphFile)
-    diameter = graph.findDiameter()
-    
-    # nodes, edges = graph.sccFind(graphFile)
-    # print "Largest component size is: " + str(nodes)       # 70355
-    # print "Number of edges in component is: " + str(edges) # 888662
-    print "Diameter is: " + str(diameter)                  # 10
 
 if __name__ == "__main__":
     main()
