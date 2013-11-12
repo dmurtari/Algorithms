@@ -17,3 +17,18 @@ class Queue:
     def eject(self):
         return self.items.pop()
         self.size -= 1
+
+def main():
+    q = Queue()
+    print str(q.isEmpty()) + " should be true"
+    q.inject(1)
+    q.inject(2)
+    q.inject(3)
+    print str(q.isEmpty()) + " should be false"
+    print str(q.eject()) + " should be 1"
+    print str(q.eject()) + " should be 2"
+    print str(q.eject()) + " should be 3"   
+
+if __name__ == "__main__":
+    main()
+
