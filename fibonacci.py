@@ -24,6 +24,12 @@ class Fibonacci:
         for i in range(2, n + 1):
             self.F.append(self.F[i - 1] + self.F[i - 2])
         return self.F[n]
+        
+    def fasterIteration(self, n):
+        a, b = 0, 1
+        for i in range(2, n + 1):
+            a, b = b, a + b
+        return b
             
           
 def main():
@@ -31,6 +37,7 @@ def main():
     print fib.recursive(10)
     print fib.memoization(10)
     print fib.iteration(10)
+    print fib.fasterIteration(10)
   
 if __name__ == "__main__":
     main()
